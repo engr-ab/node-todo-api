@@ -10,15 +10,15 @@ MongoClient.connect('mongodb://localhost:27017/testdb', (err, db)=>{
 
    //do some task after connection
    //add document to database
-//   db.collection('users')
-//    .insertOne({name :'ramzan', age:27}, (err, result)=>{ 
-//        if(err){
-//            return console.log('cannot insert',err);
-//        }
-//         console.log('****** inserted document:\n', JSON.stringify(result.ops));
+  db.collection('users')
+   .insertOne({name :'ramzan', age:27}, (err, result)=>{ 
+       if(err){
+           return console.log('cannot insert',err);
+       }
+        console.log('****** inserted document:\n', JSON.stringify(result.ops));
     
 
-//    });//inserOne end
+   });//inserOne end
 
 
 
