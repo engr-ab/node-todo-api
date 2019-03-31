@@ -27,7 +27,7 @@ MongoClient.connect('mongodb://localhost:27017/testdb', (err, db)=>{
    .find({
         //    name:'ramzan'
         //_id in database is not a string  , it's and object id
-        _id: ObjectID('5c9c614def08b808c8fcdc1a')
+        _id: new ObjectID('5c9c614def08b808c8fcdc1a')
     })
    .toArray()
    .then((docs)=>{
