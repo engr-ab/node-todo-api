@@ -10,7 +10,7 @@ MongoClient.connect('mongodb://localhost:27017/ToDosApp' ,(err, db)=>{
     db.collection('toDos').findOneAndUpdate(
         {_id: new ObjectID('5c9f18737b8ab9132047103a')},
         { $set:{
-            name: 'eat breakfast',
+            name: 'practice node',
             completed:true
         }},
         {returnOriginal:false}) //true  mean old value in database before update
