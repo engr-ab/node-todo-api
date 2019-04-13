@@ -43,7 +43,7 @@ app.post('/user',(req, res)=>{
 });// post request end
 
 app.listen(3000, ()=>{
-    console.log('-----\nserver started at port....');
+    console.log('-----\nserver started at port 3000....');
 });
 
 
