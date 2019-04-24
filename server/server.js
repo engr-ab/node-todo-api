@@ -15,6 +15,7 @@ app.use(bodyParser.json()); //bodyParser.json() returns a function that is our m
 
 
 app.post('/todo',(req, res)=>{
+
     const newToDo= new toDo({
         text: req.body.text
     });
@@ -47,3 +48,6 @@ app.listen(3000, ()=>{
 });
 
 
+module.exports= {
+    app
+};
