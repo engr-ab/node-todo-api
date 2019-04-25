@@ -5,10 +5,15 @@ var {app} = require('./../server'); // load app variable from exported file(es6 
 
 var {toDo} = require('./../models/toDo');
 
+const todos = [
+    {text:"First test todo" },
+    {text: "Second test todo"}
+];
+
 beforeEach((done)=>{
 toDo.remove({}).then(()=>{
-    done();
-});
+    return toDo.insertMany(todos);
+}).then(()=>done());
 
 });
 
@@ -28,7 +33,7 @@ describe('POST /todos', ()=>{
             if(err){
                 return done(err);
             }
-            toDo.find().then((toDos)=>{
+            toDo.find({text}).then((toDos)=>{
                 expect(toDos.length).toBe(1);
                 expect(toDos[0].text).toBe(text);
                 done();
@@ -48,7 +53,7 @@ it('should not create any todo with invalid data', (done)=>{
 
         toDo.find()
         .then((toDos)=>{
-            expect(toDos.length).toBe(0);
+            expect(toDos.length).toBe(2);
             done();
         })
         .catch((e) => done(e) );
@@ -56,3 +61,16 @@ it('should not create any todo with invalid data', (done)=>{
 });
 
 });//describe end
+
+describe('GET /todos',()=>{
+    it('should get all todos',(done)=>{
+
+        request(app)
+        .get('/todos')
+        .expect(200)
+        .expect((res)=>{
+            expect(res.body.todos.length).toBe(2);
+        })
+        .end(done);
+    })
+});
