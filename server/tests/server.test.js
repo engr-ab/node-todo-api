@@ -12,13 +12,13 @@ toDo.remove({}).then(()=>{
 
 });
 
-describe('POST /todo', ()=>{
+describe('POST /todos', ()=>{
 
     it('should create a new todo',(done)=>{
       
         const text = "test todo";
         request(app)// request using supertest
-        .post('/todo')
+        .post('/todos')
         .send({ text })//sending data with request
         .expect(200)
         .expect((res)=>{ //custom expect 
@@ -38,7 +38,7 @@ describe('POST /todo', ()=>{
     
 it('should not create any todo with invalid data', (done)=>{
     request(app)
-    .post('/todo')
+    .post('/todos')
     .send({})
     .expect(400)
     .end((err,res)=>{

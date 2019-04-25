@@ -14,7 +14,7 @@ app.use(bodyParser.json()); //bodyParser.json() returns a function that is our m
 //body-parser converts incoming /request json to js object
 
 
-app.post('/todo',(req, res)=>{
+app.post('/todos',(req, res)=>{
 
     const newToDo= new toDo({
         text: req.body.text
@@ -28,6 +28,17 @@ app.post('/todo',(req, res)=>{
     });
  
 }); //post end
+
+app.get('/todos', (req,res)=>{
+    toDo.find().then((todos)=>{
+        res.send({
+            todos,
+        });
+    }, (e)=>{
+        res.status(400).send(e)
+    });
+});
+
 
 app.post('/user',(req, res)=>{
     const newUser= new user({
