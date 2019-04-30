@@ -1,5 +1,6 @@
 var express = require('express');
 var bodyParser = require('body-parser');
+var {ObjectID} = require('mongodb');
 //body-paeser.. to send json to the server
 
 const {mongoose} = require('./db/mongoose'); //ES6 destructuring
@@ -27,7 +28,7 @@ app.post('/todos',(req, res)=>{
         res.status(400).send(err);
     });
  
-}); //post end
+}); //post todos end
 
 app.get('/todos', (req,res)=>{
     toDo.find().then((todos)=>{
@@ -35,10 +36,28 @@ app.get('/todos', (req,res)=>{
             todos,
         });
     }, (e)=>{
-        res.status(400).send(e)
+        res.status(400).send(e);
     });
 });
 
+//get todo with id
+app.get('/todos/:id',(req,res)=>{
+    var id= req.params.id;
+    if(ObjectID.isValid(id)){
+        toDo.findOne({_id:id})
+        .then((todo)=>{
+            if(!todo){
+                return res.status(404).send({error:"todo not found in database"});
+            }
+            res.send({todo});
+        },(e)=>{
+            res.status(400).send({});
+        });
+    }else{
+        res.status(404).send({error: "invalid id"});
+    }
+   
+});
 
 app.post('/user',(req, res)=>{
     const newUser= new user({
