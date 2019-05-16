@@ -9,6 +9,7 @@ const {user} = require('./models/user');
 
 
 var app = express();
+const port = process.env.PORT ||3000;
 
 //middleware
 app.use(bodyParser.json()); //bodyParser.json() returns a function that is our middleware
@@ -41,22 +42,22 @@ app.get('/todos', (req,res)=>{
 });
 
 //get todo with id
-app.get('/todos/:id',(req,res)=>{
-    var id= req.params.id;
-    if(ObjectID.isValid(id)){
-        toDo.findOne({_id:id})
-        .then((todo)=>{
-            if(!todo){
-                return res.status(404).send({error:"todo not found in database"});
-            }
-            res.send({todo});
-        },(e)=>{
-            res.status(400).send({});
-        });
-    }else{
-        res.status(404).send({error: "invalid id"});
+app.get('/todos/:id', (req, res) => {
+  var id = req.params.id;
+
+  if (!ObjectID.isValid(id)) {
+    return res.status(404).send();
+  }
+
+  toDo.findById(id).then((todo) => {
+    if (!todo) {
+      return res.status(404).send();
     }
-   
+
+    res.send({todo});
+  }).catch((e) => {
+    res.status(400).send();
+  });
 });
 
 app.post('/user',(req, res)=>{
@@ -73,8 +74,8 @@ app.post('/user',(req, res)=>{
     });
 });// post request end
 
-app.listen(3000, ()=>{
-    console.log('-----\nserver started at port 3000....');
+app.listen(port, ()=>{
+    console.log(`-----\nserver started at port ${port} ....`);
 });
 
 
