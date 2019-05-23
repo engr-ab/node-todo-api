@@ -34,6 +34,7 @@ app.post('/todos',(req, res)=>{
 app.get('/todos', (req,res)=>{
     toDo.find().then((todos)=>{
         res.send({
+            todos_length:todos.length,
             todos,
         });
     }, (e)=>{
