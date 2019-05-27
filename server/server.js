@@ -75,6 +75,26 @@ app.post('/user',(req, res)=>{
     });
 });// post request end
 
+app.delete('/todos/:id', (req,res)=>{
+    var id = req.params.id;
+    
+    if(!ObjectID.isValid(id)){
+        return res.status(404).send({error:"bad id"});
+    }
+
+    // toDo.findByIdAndRemove(id)
+    toDo.findOneAndDelete({'_id':id})
+    .then((todo)=>{
+        if(!todo){
+            return res.status(404).send({error:"not found"});
+        }
+        res.send({todo});
+        
+    }).catch((err)=>{
+        res.status(400).send(err);
+    });
+});
+
 app.listen(port, ()=>{
     console.log(`-----\nserver started at port ${port} ....`);
 });
