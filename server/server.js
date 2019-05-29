@@ -36,6 +36,7 @@ app.post('/todos',(req, res)=>{
 app.get('/todos', (req,res)=>{
     toDo.find().then((todos)=>{
         res.send({
+            env:process.env.NODE_ENV,
             todos_length:todos.length,
             todos,
         });
