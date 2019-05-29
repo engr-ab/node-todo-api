@@ -6,7 +6,7 @@ mongoose.Promise = global.Promise;
 // mongoose.connect(   process.env.MONGODB_URI ||'mongodb://localhost:27017/to_dos_app', {useNewUrlParser: true});
 
 //if using mlab direct link
-mongoose.connect(   encodeURI('mongodb://admin:admin123@ds157256.mlab.com:57256/node-todos-api'), {useNewUrlParser: true});
+mongoose.connect(   encodeURI(process.env.MONGODB_URI), {useNewUrlParser: true});
 
 //for local database, without internet
 // mongoose.connect('mongodb://localhost:27017/to_dos_app', {useNewUrlParser: true});

@@ -1,4 +1,4 @@
-console.log("env***** ",process.env.NODE_ENV);
+require('./config/config');
 const express = require('express');
 const bodyParser = require('body-parser');
 const {ObjectID} = require('mongodb');
@@ -36,7 +36,8 @@ app.post('/todos',(req, res)=>{
 app.get('/todos', (req,res)=>{
     toDo.find().then((todos)=>{
         res.send({
-            env:process.env.NODE_ENV,
+            // env:process.env.NODE_ENV,
+            // mongodb_uri:process.env.MONGODB_URI,
             todos_length:todos.length,
             todos,
         });
