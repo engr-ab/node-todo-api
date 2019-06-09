@@ -7,7 +7,7 @@ const _=require('lodash');
 
 const {mongoose} = require('./db/mongoose'); //ES6 destructuring
 const {toDo} = require('./models/toDo');
-const {user} = require('./models/user');
+const {User} = require('./models/user');
 
 
 var app = express();
@@ -16,6 +16,22 @@ const port = process.env.PORT ||3000;
 //middleware
 app.use(bodyParser.json()); //bodyParser.json() returns a function that is our middleware
 //body-parser converts incoming /request json to js object
+
+//user 
+//save/post a user
+app.post('/users',(req, res)=>{
+    const body = _.pick(req.body, ['email', 'password'])
+    const user= new User(body);
+
+    user.save()
+    .then(()=>{
+        return user.generateAuthToken();
+    }).then((token)=>{
+        res.header('x-auth', token).send( user.toJSON() ); 
+    }).catch((e)=>{
+        res.status(400).send({e});
+    });
+});// post request end
 
 
 app.post('/todos',(req, res)=>{
@@ -65,20 +81,6 @@ app.get('/todos/:id', (req, res) => {
   });
 });
 
-app.post('/user',(req, res)=>{
-    const newUser= new user({
-        email: req.body.email,
-        name: req.body.name
-    });
-
-    newUser.save()
-    .then((doc)=>{
-        res.send(doc);
-    },(err)=>{
-        res.send(err);
-    });
-});// post request end
-
 app.delete('/todos/:id', (req,res)=>{
     var id = req.params.id;
     
@@ -125,6 +127,8 @@ app.patch('/todos/:id',(req,res)=>{
         res.status(400).send(e);
     });
 });
+
+
 
 app.listen(port, ()=>{
     console.log(`-----\nserver started at port ${port} ....`);

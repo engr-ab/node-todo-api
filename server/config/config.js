@@ -5,11 +5,11 @@ var env = process.env.NODE_ENV || "development";
 if(env === "development"){
     process.env.NODE_ENV = "development";
     process.env.PORT = 3000;
-    process.env.MONGODB_URI = 'mongodb://localhost:27017/to_dos_app';
+    process.env.MONGODB_URI = 'mongodb://localhost:27017/todos_api';
 }else if(env === "test"){
     process.env.NODE_ENV ="test";
     process.env.PORT = 3000;
-    process.env.MONGODB_URI = 'mongodb://localhost:27017/to_dos_app_test';
+    process.env.MONGODB_URI = 'mongodb://localhost:27017/todos_api_test';
 }
 // console.log("env***** ",env);
 // console.log("mongodb_uri", process.env.MONGODB_URI);
