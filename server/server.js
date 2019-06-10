@@ -8,6 +8,7 @@ const _=require('lodash');
 const {mongoose} = require('./db/mongoose'); //ES6 destructuring
 const {toDo} = require('./models/toDo');
 const {User} = require('./models/user');
+const {authenticate} = require('./middleware/authenticate');
 
 
 var app = express();
@@ -17,7 +18,7 @@ const port = process.env.PORT ||3000;
 app.use(bodyParser.json()); //bodyParser.json() returns a function that is our middleware
 //body-parser converts incoming /request json to js object
 
-//user 
+//users 
 //save/post a user
 app.post('/users',(req, res)=>{
     const body = _.pick(req.body, ['email', 'password'])
@@ -33,7 +34,12 @@ app.post('/users',(req, res)=>{
     });
 });// post request end
 
+//find by token
+app.get('/users/me',authenticate,(req,res)=>{
+        res.send(req.user);
+});
 
+//post todo
 app.post('/todos',(req, res)=>{
 
     const newToDo= new toDo({
