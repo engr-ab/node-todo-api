@@ -3,6 +3,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const {ObjectID} = require('mongodb');
 const _=require('lodash');
+const  bcrytp = require('bcryptjs');
 //body-paeser.. to send json to the server
 
 const {mongoose} = require('./db/mongoose'); //ES6 destructuring
@@ -33,6 +34,18 @@ app.post('/users',(req, res)=>{
         res.status(400).send({e});
     });
 });// post request end
+
+//login user
+app.post('/users/login',(req,res)=>{
+    var body = _.pick(req.body,['email', 'password']);
+    User.findByCredentials(body.email, body.password).then( (user)=>{
+        return user.generateAuthToken(user).then((token)=>{ //return keyword here, makes sure to run catch(err) in case of any error
+            res.header('x-auth',token).send(token);
+        });
+    } ).catch((err)=>{
+        res.status(400).send(err)
+    });
+});
 
 //find by token
 app.get('/users/me',authenticate,(req,res)=>{

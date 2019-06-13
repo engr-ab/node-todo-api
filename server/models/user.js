@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
+const bcrytp = require('bcryptjs');
 
 //created schema so that we can add methods on it
 var UserSchema = new mongoose.Schema({
@@ -55,6 +56,8 @@ UserSchema.methods.generateAuthToken = function() {
         return token;
     });
 };
+
+//model method
 UserSchema.statics.findByToken = function (token){
     var User = this;
     var decoded ;
@@ -74,6 +77,40 @@ return User.findOne({
    'tokens.access': 'auth' 
 });
 };
+
+//find by credentials
+UserSchema.statics.findByCredentials = function(email, password){
+    var User = this;
+    return User.findOne({email}).then( (user)=>{
+        if(!user){
+            return Promise.reject('user not found!');
+        }
+        return new Promise((resolve, reject)=>{
+             bcrytp.compare(password, user.password, (err, res)=>{
+                if(res===true){
+                    return resolve (user);
+                }
+                return  reject('Password wrong');
+            });
+        });
+       
+    } );
+};
+
+//mongoose middleware, run before 'save' event
+UserSchema.pre('save', function (next){
+    var user = this;
+    if(user.isModified('password')){
+        bcrytp.genSalt(10, (err ,salt)=>{
+            bcrytp.hash(user.password,salt,(err,hash)=>{
+                user.password = hash;
+                next();
+            });
+        });
+    }else{
+        next();
+    }
+});
 
 //model methods e.g User.find by token();, instance methods {apply on each individual instance} user.generateAuthToken
 var User = mongoose.model('users',UserSchema);
