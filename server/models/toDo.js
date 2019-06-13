@@ -15,6 +15,10 @@ var toDo = mongoose.model('todos',{ //2nd argument to model is a schema
     completedAt:{
         type: Number,
         default: null
+    },
+    _creator:{
+        required:true,
+        type: mongoose.Schema.Types.ObjectId
     }
 }); //model end
 

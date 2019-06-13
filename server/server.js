@@ -62,10 +62,11 @@ app.get('/users/me',authenticate,(req,res)=>{
 });
 
 //post todo
-app.post('/todos',(req, res)=>{
+app.post('/todos',authenticate,(req, res)=>{
 
     const newToDo= new toDo({
-        text: req.body.text
+        text: req.body.text,
+        _creator:req.user._id
     });
 
     newToDo.save()
@@ -77,8 +78,10 @@ app.post('/todos',(req, res)=>{
  
 }); //post todos end
 
-app.get('/todos', (req,res)=>{
-    toDo.find().then((todos)=>{
+app.get('/todos',authenticate, (req,res)=>{
+    toDo.find({
+        _creator:req.user._id
+    }).then((todos)=>{
         res.send({
             // env:process.env.NODE_ENV,
             // mongodb_uri:process.env.MONGODB_URI,
@@ -91,14 +94,17 @@ app.get('/todos', (req,res)=>{
 });
 
 //get todo with id
-app.get('/todos/:id', (req, res) => {
+app.get('/todos/:id',authenticate, (req, res) => {
   var id = req.params.id;
 
   if (!ObjectID.isValid(id)) {
     return res.status(404).send();
   }
 
-  toDo.findById(id).then((todo) => {
+  toDo.findOne({
+      _id:id,
+      _creator:req.user._id
+  }).then((todo) => {
     if (!todo) {
       return res.status(404).send();
     }
@@ -109,7 +115,7 @@ app.get('/todos/:id', (req, res) => {
   });
 });
 
-app.delete('/todos/:id', (req,res)=>{
+app.delete('/todos/:id',authenticate, (req,res)=>{
     var id = req.params.id;
     
     if(!ObjectID.isValid(id)){
@@ -117,7 +123,10 @@ app.delete('/todos/:id', (req,res)=>{
     }
 
     // toDo.findByIdAndRemove(id)
-    toDo.findOneAndDelete({'_id':id})
+    toDo.findOneAndRemove({
+        _id:id,
+      _creator:req.user._id
+    })
     .then((todo)=>{
         if(!todo){
             return res.status(404).send({error:"not found"});
@@ -130,7 +139,7 @@ app.delete('/todos/:id', (req,res)=>{
 });//delete request end
 
 //patch request
-app.patch('/todos/:id',(req,res)=>{
+app.patch('/todos/:id',authenticate,(req,res)=>{
     const id = req.params.id;
 
     if(!ObjectID.isValid(id)){
@@ -145,7 +154,7 @@ app.patch('/todos/:id',(req,res)=>{
         body.completedAt=null;
     }
     //update {new :true} is saying return us new updated todo.
-    toDo.findByIdAndUpdate(id,{$set:body},{new:true})
+    toDo.findOneAndUpdate({_id:id, _creator:req.user._id },{$set:body},{new:true})
     .then((todo)=>{
         if(!todo){
             return res.status(404).send({error:"NOT FOUND"});
