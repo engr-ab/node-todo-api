@@ -40,10 +40,19 @@ app.post('/users/login',(req,res)=>{
     var body = _.pick(req.body,['email', 'password']);
     User.findByCredentials(body.email, body.password).then( (user)=>{
         return user.generateAuthToken(user).then((token)=>{ //return keyword here, makes sure to run catch(err) in case of any error
-            res.header('x-auth',token).send(token);
+            res.header('x-auth',token).send('new token setting done');
         });
     } ).catch((err)=>{
         res.status(400).send(err)
+    });
+});
+
+//remove token, logging out
+app.delete('/users/me/token',authenticate,(req, res)=>{
+    req.user.removeToken(req.token).then(()=>{
+        res.status(200).send('token romoved');
+    }).catch((err)=>{
+        res.status(400).send(err);
     });
 });
 

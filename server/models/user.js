@@ -49,12 +49,34 @@ UserSchema.methods.generateAuthToken = function() {
     var user = this;
     var access ='auth';
     var token = jwt.sign({_id:user._id.toHexString(), access}, 'abc123').toString();
-
-    //push to tokens array, ES6 syntax
+     return user.update({//additional call(user.update) to remove already existing tokens,then create new (for login route)
+        $pull:{ 
+            tokens:{
+                access:access
+            }
+        }
+    }).then(()=>{ //do this after removing old tokens of given key
+         //push to tokens array, ES6 syntax
     user.tokens.push({access, token});
     return user.save().then(()=>{
         return token;
     });
+    });
+   
+};
+
+UserSchema.methods.removeToken = function(token){
+    var user = this;
+    return user.update({
+        //mongodb operator $pull, let you remove itoms from an array that matches a certain criteria
+        $pull:{ 
+            tokens:{//pull from tokens array
+                token: token //pull/delete any object from array that has token property=token
+
+            }
+        }
+    });
+    
 };
 
 //model method
