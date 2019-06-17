@@ -13,7 +13,7 @@ const {authenticate} = require('./middleware/authenticate');
 
 
 var app = express();
-const port = process.env.PORT ||3000;
+const port = process.env.PORT;
 
 //middleware
 app.use(bodyParser.json()); //bodyParser.json() returns a function that is our middleware
