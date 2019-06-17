@@ -1,3 +1,5 @@
+//mongodb://admin:admin123@ds157256.mlab.com:57256/node-todos-api
+//protocol://username:password@address:port/database (database long string contents)
 //default env  only exists for test and production
 var env = process.env.NODE_ENV || "development";
 if(env === "development" || env ==="test" ){
