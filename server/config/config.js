@@ -1,7 +1,7 @@
-const config = require('./config.json');
 //default env  only exists for test and production
 var env = process.env.NODE_ENV || "development";
 if(env === "development" || env ==="test" ){
+    const config = require('./config.json');
     envConfig = config[env];
     Object.keys(envConfig).forEach((key)=>{
         process.env[key] = envConfig[key];
